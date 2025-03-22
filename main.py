@@ -17,7 +17,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+genai.configure(api_key="AIzaSyDFgE8N8C1-oUEKLXXdSO8ty5T3OrqdVp4")
 model = genai.GenerativeModel('gemini-2.0-flash')
 
 def clean_text(text):
@@ -36,7 +36,8 @@ class KeywordResearchAgent(Agent):
     def analyze(self, url):
         prompt = f"Find relevant keywords for the following URL: {url}. Describe the different types of keywords that are relevant (e.g., general keywords, long-tail keywords, etc.) and explain their importance for SEO."
         response = model.generate_content(prompt)
-        return clean_text(response.text)
+        return response.text
+        #return clean_text(response.text)
 
 class OnPageOptimizationAgent(Agent):
     def analyze(self, url):
@@ -48,7 +49,8 @@ class OnPageOptimizationAgent(Agent):
                 'name': 'description'}) else 'No description found'
             prompt = f"Analyze the following title: {title} and description: {description} for SEO."
             response = model.generate_content(prompt)
-            return clean_text(response.text)
+            return response.text
+            # return clean_text(response.text)
         except Exception as e:
             return f"Error analyzing on-page elements: {e}"
 
@@ -60,6 +62,8 @@ class ContentAnalysisAgent(Agent):
             content = ' '.join([p.get_text(strip=True) for p in soup.find_all('p')])
             prompt = f"Analyze the following website content for SEO and provide recommendations:\n\n{content}"
             response = model.generate_content(prompt)
+            # response = model.generate_content(prompt)
+            return response.text
             return clean_text(response.text)
         except Exception as e:
             return f"Error analyzing content: {e}"
@@ -107,7 +111,8 @@ class TechnicalSEOAgent(Agent):
                         Provide recommendations for improvement.
                         """
             response = model.generate_content(prompt)
-            return clean_text(response.text)
+            # return clean_text(response.text)
+            return response.text
 
         except Exception as e:
             return f"Error analyzing technical SEO: {e}"
@@ -127,7 +132,8 @@ class LinkBuildingAgent(Agent):
                     * URL: {url}
                     """
             response = model.generate_content(prompt)
-            return clean_text(response.text)
+            # return clean_text(response.text)
+            return response.text
         except Exception as e:
             return f"Error analyzing link building opportunities: {e}"
 
